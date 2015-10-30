@@ -5,8 +5,8 @@ BOARD  := ArduinoMega
 # BOARD  := ArduinoNano328p
 # BOARD  := ArduinoNano168
 
-# PROGRAMMER := avrisp2
-PROGRAMMER := stk500 -P /dev/ttyUSB0
+PROGRAMMER := avrisp2
+# PROGRAMMER := stk500 -P /dev/ttyUSB0
 # PROGRAMMER := atmelice_isp
 
 DEPFLAGS  = -MM -MT '$(addprefix $(BUILD_PATH)/, $(<:.c=.o)) $@' $< -MF $@

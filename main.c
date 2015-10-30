@@ -3,7 +3,10 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
 
+// Instantiate Arduino constants
+#define ARDUINO_MAIN
 #include "arduino.h"
+
 #include "timer0.h"
 
 
@@ -11,6 +14,7 @@ int16_t main(void)
 {
   ARDUINO_LED_ENABLE;
   Timer0Init();
+  PWMInit();
 
   sei();  // Enable interrupts
 

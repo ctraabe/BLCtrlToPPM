@@ -1,6 +1,16 @@
 #ifndef ARDUINO_H_
 #define ARDUINO_H_
 
+#include <avr/pgmspace.h>
+
+extern const uint16_t PROGMEM port_to_mode_PGM[];
+extern const uint16_t PROGMEM port_to_input_PGM[];
+extern const uint16_t PROGMEM port_to_output_PGM[];
+
+extern const uint8_t PROGMEM digital_pin_to_port_PGM[];
+extern const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[];
+extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
+
 #define digitalPinToPort(P) ( pgm_read_byte( digital_pin_to_port_PGM + (P) ) )
 #define digitalPinToBitMask(P) ( pgm_read_byte( digital_pin_to_bit_mask_PGM + (P) ) )
 #define digitalPinToTimer(P) ( pgm_read_byte( digital_pin_to_timer_PGM + (P) ) )

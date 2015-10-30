@@ -7,6 +7,7 @@
 #define ARDUINO_MAIN
 #include "arduino.h"
 
+#include "pwm.h"
 #include "timer0.h"
 
 

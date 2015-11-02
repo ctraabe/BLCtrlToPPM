@@ -1,4 +1,4 @@
-#include "pwm.h"
+#include "ppm.h"
 
 #include <avr/io.h>
 
@@ -8,14 +8,14 @@
 // =============================================================================
 // Private data:
 
-#define PWM_DIVIDER (8)
-#define F_PWM (160)
+#define PPM_DIVIDER (8)
+#define F_PPM (160)
 
 
 // =============================================================================
 // Public functions:
 
-void PWMInit(void)
+void PPMInit(void)
 {
   *portModeRegister(digitalPinToPort(6)) |= digitalPinToBitMask(6);
   *portModeRegister(digitalPinToPort(7)) |= digitalPinToBitMask(7);
@@ -38,7 +38,7 @@ void PWMInit(void)
          | (0<<CS41)
          | (0<<CS40);
 
-  switch (PWM_DIVIDER)
+  switch (PPM_DIVIDER)
   {
     case 1:
       TCCR4B |= 0<<CS42 | 0<<CS41 | 1<<CS40;
@@ -67,8 +67,28 @@ void PWMInit(void)
          | (0<<OCIE4A)
          | (0<<TOIE4);
 
-  ICR4 = F_CPU / PWM_DIVIDER / F_PWM;  // Output compare register.
-  OCR4A = 3000;
-  OCR4B = 3000;
-  OCR4C = 3000;
+  ICR4 = F_CPU / PPM_DIVIDER / F_PPM;
+  OCR4A = 2200;
+  OCR4B = 2200;
+  OCR4C = 2200;
+}
+
+// -----------------------------------------------------------------------------
+void SetPPM(uint8_t index, uint16_t value)
+{
+  if (value > 1680) value = 1680;
+  switch (index)
+  {
+    case 6:
+      OCR4A = 2200 + value;
+      break;
+    case 7:
+      OCR4B = 2200 + value;
+      break;
+    case 8:
+      OCR4C = 2200 + value;
+      break;
+    default:
+      break;
+  }
 }

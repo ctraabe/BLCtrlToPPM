@@ -17,6 +17,22 @@
 
 void PPMInit(void)
 {
+  // Arduino MEGA 2560 specifics
+  // PWM2  - TIMER3B (16 bit) pin PE4
+  // PWM3  - TIMER3C (16 bit) pin PE5
+  // PWM4  - TIMER0B (8 bit) pin PG5
+  // PWM5  - TIMER3A (16 bit) pin PE3
+  // PWM6  - TIMER4A (16 bit) pin PH3
+  // PWM7  - TIMER4B (16 bit) pin PH4
+  // PWM8  - TIMER4C (16 bit) pin PH5
+  // PWM9  - TIMER2B (8 bit) pin PH6
+  // PWM10 - TIMER2A (8 bit) pin PB4
+  // PWM11 - TIMER1A (16 bit) pin PB5
+  // PWM12 - TIMER1B (16 bit) pin PB6
+  // PWM13 - TIMER0A (8 bit) pin PB7
+
+  // For demonstration, use pins 6, 7, and 8
+
   PinMode(6, OUTPUT);
   PinMode(7, OUTPUT);
   PinMode(8, OUTPUT);

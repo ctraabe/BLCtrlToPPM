@@ -17,9 +17,9 @@
 
 void PPMInit(void)
 {
-  *portModeRegister(digitalPinToPort(6)) |= digitalPinToBitMask(6);
-  *portModeRegister(digitalPinToPort(7)) |= digitalPinToBitMask(7);
-  *portModeRegister(digitalPinToPort(8)) |= digitalPinToBitMask(8);
+  PinMode(6, OUTPUT);
+  PinMode(7, OUTPUT);
+  PinMode(8, OUTPUT);
 
   TCCR4A = (1<<COM4A1)
          | (0<<COM4A0)

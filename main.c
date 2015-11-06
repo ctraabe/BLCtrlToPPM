@@ -9,6 +9,7 @@
 
 #include "ppm.h"
 #include "timer0.h"
+#include "uart.h"
 
 
 int16_t main(void)
@@ -16,19 +17,17 @@ int16_t main(void)
   ARDUINO_LED_ENABLE;
   Timer0Init();
   PPMInit();
+  UARTInit();
 
   sei();  // Enable interrupts
 
   // Main loop
-  uint16_t timer = GetTimestampMillisFromNow(250), counter = 0;
+  uint16_t timer = GetTimestampMillisFromNow(250);
   for (;;)  // Preferred over while(1)
   {
-    counter > 2000 ? counter = 0 : counter++;
-    SetPPM(6, counter);
-    SetPPM(7, counter);
-    SetPPM(8, counter);
     while(!TimestampInPast(timer)) continue;
-    timer += 1;
+    UARTPrintf("Test");
+    timer += 500;
     ARDUINO_LED_TOGGLE;
   }
 }

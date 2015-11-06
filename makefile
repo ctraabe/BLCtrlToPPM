@@ -14,7 +14,7 @@ CFLAGS    = -c -g $(LDFLAGS)
 CCFLAGS   = -std=gnu99 -Wstrict-prototypes
 CPPFLAGS  = -std=c++11 -fno-exceptions
 LSTFLAGS  = -Wa,-adhlns=$(addprefix $(BUILD_PATH)/,$(addsuffix .lst, $<))
-LDFLAGS   = -Ofast -pedantic -Werror -Wall -Wextra \
+LDFLAGS   = -Ofast -Werror -Wall -Wextra \
             -Wundef -fshort-enums -ffreestanding -Wl,--relax
 ALLFLAGS  = -mmcu=$(MCU) -DF_CPU="$(F_CPU)" -I$(PINS)
 

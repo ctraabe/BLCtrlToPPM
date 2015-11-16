@@ -7,6 +7,7 @@
 #include <util/twi.h>
 
 #include "arduino.h"
+#include "led.h"
 
 
 // =============================================================================
@@ -97,6 +98,7 @@ ISR(TWI_vect)
       address = TWDR;
       if (address != 0) address = (address - BLCTRL_BASE_ADDRESS) >> 1;
       rx_buffer_[rx_buffer_head_].address = address;
+      YellowLED2On();
       I2CRxAck();
       break;
     case TW_SR_DATA_ACK:  // data received, ACK returned
@@ -119,6 +121,7 @@ ISR(TWI_vect)
       rx_buffer_head_ = (rx_buffer_head_ + 1) % N_BUFFERS;
       payload_ptr = &rx_buffer_[rx_buffer_head_].payload[0];
       length = 0;
+      YellowLED2Off();
       I2CRxAck();
       break;
     case TW_NO_INFO:  // no state information available

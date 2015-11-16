@@ -8,6 +8,7 @@
 #include "arduino.h"
 
 #include "i2c.h"
+#include "led.h"
 #include "ppm.h"
 #include "timer0.h"
 #include "uart.h"
@@ -15,7 +16,7 @@
 
 int16_t main(void)
 {
-  ARDUINO_LED_ENABLE;
+  LEDInit();
   Timer0Init();
   PPMInit();
   I2CSlaveInit();
@@ -28,15 +29,15 @@ int16_t main(void)
   for (;;)  // Preferred over while(1)
   {
     volatile struct I2CMessage * i2c_message_ptr = PopI2CMessage();
-    if (i2c_message_ptr && i2c_message_ptr->address == 1)
+    if (i2c_message_ptr)
     {
-      SetPPM(6, i2c_message_ptr->payload[0]);
+      SetPPM(i2c_message_ptr->address, i2c_message_ptr->payload[0] << 3);
     }
 
     if (TimestampInPast(timer))
     {
       timer += 500;
-      ARDUINO_LED_TOGGLE;
+      GreenLEDToggle();
     }
   }
 }

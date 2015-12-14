@@ -74,14 +74,7 @@ static void I2CRxAck(void)
 {
   TWCR = _BV(TWINT) | _BV(TWEA) | _BV(TWEN) | _BV(TWIE);
 }
-/*
-// -----------------------------------------------------------------------------
-// Initiate data reception and do not acknowledge the result (don't send more).
-static void I2CRxNAck(void)
-{
-  TWCR = _BV(TWINT) | _BV(TWEN) | _BV(TWIE);
-}
-*/
+
 // -----------------------------------------------------------------------------
 // I2C interrupt indicating that the I2C is active and waiting for the next
 // instruction.
@@ -110,7 +103,7 @@ ISR(TWI_vect)
       I2CRxAck();
       break;
     case TW_ST_SLA_ACK:  // SLA+R received, ACK returned
-      TWDR = 255;
+      TWDR = 240;  // Specific response for this module.
     case TW_ST_DATA_ACK:  // data transmitted, ACK received
     case TW_ST_DATA_NACK:  // data transmitted, NACK received
     case TW_ST_LAST_DATA:  // last data byte transmitted, ACK received

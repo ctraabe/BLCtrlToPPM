@@ -25,18 +25,31 @@ int16_t main(void)
   sei();  // Enable interrupts
 
   // Main loop
-  uint16_t timer = GetTimestampMillisFromNow(250);
+  uint16_t heartbeat = GetTimestampMillisFromNow(250);
+  uint16_t ppm_timeout[8] = { 0 };
   for (;;)  // Preferred over while(1)
   {
     volatile struct I2CMessage * i2c_message_ptr = PopI2CMessage();
-    if (i2c_message_ptr)
+    if (i2c_message_ptr && i2c_message_ptr->address < 8)
     {
-      SetPPM(i2c_message_ptr->address, i2c_message_ptr->payload[0] << 3);
+      // Set the motor to the desired value.
+      SetPPM(i2c_message_ptr->address,
+        ((uint16_t)i2c_message_ptr->payload[0] << 3)
+        | (i2c_message_ptr->payload[1] & 0x07));
+
+      // Advance the timeout forward 100 ms.
+      ppm_timeout[i2c_message_ptr->address] = GetTimestampMillisFromNow(100);
     }
 
-    if (TimestampInPast(timer))
+    // Kill any motors that have stale data.
+    for (uint8_t i = 8; i--; )
     {
-      timer += 500;
+      if (TimestampInPast(ppm_timeout[i])) SetPPM(i, 0);
+    }
+
+    if (TimestampInPast(heartbeat))
+    {
+      heartbeat += 250;
       GreenLEDToggle();
     }
   }

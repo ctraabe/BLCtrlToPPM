@@ -192,32 +192,35 @@ void PPMInit(void)
 // -----------------------------------------------------------------------------
 void SetPPM(uint8_t index, uint16_t value)
 {
-  if (value > 1680) value = 1680;
+  if (value > 1840) value = 1840;
+  uint32_t temp = value * 840L * 2 * 2;
+  value = 1100 * 2 + ((uint16_t)(temp / 1840) + 1) / 2;
+
   switch (index)
   {
     case 1:
-      OCR3A = 2200 + value;
+      OCR3A = value;
       break;
     case 2:
-      OCR3B = 2200 + value;
+      OCR3B = value;
       break;
     case 3:
-      OCR3C = 2200 + value;
+      OCR3C = value;
       break;
     case 4:
-      OCR4A = 2200 + value;
+      OCR4A = value;
       break;
     case 5:
-      OCR4B = 2200 + value;
+      OCR4B = value;
       break;
     case 6:
-      OCR4C = 2200 + value;
+      OCR4C = value;
       break;
     case 7:
-      OCR1A = 2200 + value;
+      OCR1A = value;
       break;
     case 8:
-      OCR1B = 2200 + value;
+      OCR1B = value;
       break;
       break;
     default:

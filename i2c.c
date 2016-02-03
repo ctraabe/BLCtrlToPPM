@@ -13,7 +13,7 @@
 // =============================================================================
 // Private data:
 
-#define BLCTRL_BASE_ADDRESS (0x50)
+#define BLCTRL_BASE_ADDRESS (0x52)
 #define N_BUFFERS_POWER_OF_2 (4)  // 2^4 = 16
 #define N_BUFFERS (1 << N_BUFFERS_POWER_OF_2)
 
@@ -48,8 +48,9 @@ volatile struct I2CMessage * PopI2CMessage(void)
 {
   if (rx_buffer_head_ == rx_buffer_tail_) return 0;
 
+  volatile struct I2CMessage * result = &rx_buffer_[rx_buffer_tail_];
   rx_buffer_tail_ = (rx_buffer_tail_ + 1) % N_BUFFERS;
-  return &rx_buffer_[rx_buffer_tail_];
+  return result;
 }
 
 
@@ -61,7 +62,7 @@ volatile struct I2CMessage * PopI2CMessage(void)
 void I2CSlaveInit(void)
 {
   TWAR = 0x51;  // Base BL-Ctrl address plus general call.
-  TWAMR = 0x0E;  // Respond to any of the 8 motor addresses.
+  TWAMR = 0x3E;  // Respond to any of the 8 motor addresses.
   I2CRxAck();  // Send ACK upon receiving address match.
 }
 

@@ -193,35 +193,43 @@ void PPMInit(void)
 void SetPPM(uint8_t index, uint16_t value)
 {
   if (value > 1840) value = 1840;
-  uint32_t temp = value * 840L * 2 * 2;
-  value = 1100 * 2 + ((uint16_t)(temp / 1840) + 1) / 2;
+
+  // Make 20 correspond to 1.140 ms pulse and 1840 to 1.885 ms pulse
+  if (value == 0)
+  {
+    value = 1100 * 2;
+  }
+  else
+  {
+    uint32_t temp = value * 745L * 2 * 2;
+    value = 1132 * 2 + ((uint16_t)(temp / 1820) + 1) / 2;
+  }
 
   switch (index)
   {
-    case 1:
+    case 0:
       OCR3A = value;
       break;
-    case 2:
+    case 1:
       OCR3B = value;
       break;
-    case 3:
+    case 2:
       OCR3C = value;
       break;
-    case 4:
+    case 3:
       OCR4A = value;
       break;
-    case 5:
+    case 4:
       OCR4B = value;
       break;
-    case 6:
+    case 5:
       OCR4C = value;
       break;
-    case 7:
+    case 6:
       OCR1A = value;
       break;
-    case 8:
+    case 7:
       OCR1B = value;
-      break;
       break;
     default:
       break;

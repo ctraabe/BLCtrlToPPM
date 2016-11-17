@@ -1,4 +1,4 @@
-#include "ppm.h"
+#include "pwm.h"
 
 #include <avr/io.h>
 
@@ -8,28 +8,28 @@
 // =============================================================================
 // Private data:
 
-#define PPM_DIVIDER (8)
-#define F_PPM (160)
+#define PWM_DIVIDER (8)
+#define F_PWM (160)
 
 
 // =============================================================================
 // Public functions:
 
-void PPMInit(void)
+void PWMInit(void)
 {
-  // PPM 1: OC3A (PE3) at pin 5
-  // PPM 2: OC3B (PE4) at pin 6
-  // PPM 3: OC3C (PE5) at pin 7
-  // PPM 4: OC4A (PH3) at pin 15
-  // PPM 5: OC4B (PH4) at pin 16
-  // PPM 6: OC4C (PH5) at pin 17
-  // PPM 7: OC1A (PB5) at pin 24
-  // PPM 8: OC1B (PB6) at pin 25
+  // PWM 1: OC3A (PE3) at pin 5
+  // PWM 2: OC3B (PE4) at pin 6
+  // PWM 3: OC3C (PE5) at pin 7
+  // PWM 4: OC4A (PH3) at pin 15
+  // PWM 5: OC4B (PH4) at pin 16
+  // PWM 6: OC4C (PH5) at pin 17
+  // PWM 7: OC1A (PB5) at pin 24
+  // PWM 8: OC1B (PB6) at pin 25
 
-  // Set the PPM pins to output.
-  DDRB |= _BV(5) | _BV(6);  // PPM 7 & 8
-  DDRE |= _BV(3) | _BV(4) | _BV(5);  // PPM 1, 2 & 3
-  DDRH |= _BV(3) | _BV(4) | _BV(5);  // PPM 4, 5 & 6
+  // Set the PWM pins to output.
+  DDRB |= _BV(5) | _BV(6);  // PWM 7 & 8
+  DDRE |= _BV(3) | _BV(4) | _BV(5);  // PWM 1, 2 & 3
+  DDRH |= _BV(3) | _BV(4) | _BV(5);  // PWM 4, 5 & 6
 
   // Set up timers 1, 3 & 4 for 16-bit fast PWM at 160 Hz.
   TCCR1A = (1<<COM4A1)
@@ -49,7 +49,7 @@ void PPMInit(void)
          | (0<<CS41)
          | (0<<CS40);
 
-  switch (PPM_DIVIDER)
+  switch (PWM_DIVIDER)
   {
     case 1:
       TCCR1B |= 0<<CS12 | 0<<CS11 | 1<<CS10;
@@ -78,7 +78,7 @@ void PPMInit(void)
          | (0<<OCIE1A)
          | (0<<TOIE1);
 
-  ICR1 = F_CPU / PPM_DIVIDER / F_PPM;
+  ICR1 = F_CPU / PWM_DIVIDER / F_PWM;
 
   OCR1A = 2200;
   OCR1B = 2200;
@@ -101,7 +101,7 @@ void PPMInit(void)
          | (0<<CS31)
          | (0<<CS30);
 
-  switch (PPM_DIVIDER)
+  switch (PWM_DIVIDER)
   {
     case 1:
       TCCR3B |= 0<<CS32 | 0<<CS31 | 1<<CS30;
@@ -130,7 +130,7 @@ void PPMInit(void)
          | (0<<OCIE3A)
          | (0<<TOIE3);
 
-  ICR3 = F_CPU / PPM_DIVIDER / F_PPM;
+  ICR3 = F_CPU / PWM_DIVIDER / F_PWM;
 
   OCR3A = 2200;
   OCR3B = 2200;
@@ -153,7 +153,7 @@ void PPMInit(void)
          | (0<<CS41)
          | (0<<CS40);
 
-  switch (PPM_DIVIDER)
+  switch (PWM_DIVIDER)
   {
     case 1:
       TCCR4B |= 0<<CS42 | 0<<CS41 | 1<<CS40;
@@ -182,7 +182,7 @@ void PPMInit(void)
          | (0<<OCIE4A)
          | (0<<TOIE4);
 
-  ICR4 = F_CPU / PPM_DIVIDER / F_PPM;
+  ICR4 = F_CPU / PWM_DIVIDER / F_PWM;
 
   OCR4A = 2200;
   OCR4B = 2200;
@@ -190,7 +190,7 @@ void PPMInit(void)
 }
 
 // -----------------------------------------------------------------------------
-void SetPPM(uint8_t index, uint16_t value)
+void SetPWM(uint8_t index, uint16_t value)
 {
   if (value > 1840) value = 1840;
 

@@ -7,10 +7,10 @@
 // =============================================================================
 // Public functions:
 
-void PPMInit(void);
+void PWMInit(void);
 
 // -----------------------------------------------------------------------------
-void SetPPM(uint8_t index, uint16_t value);
+void SetPWM(uint8_t index, uint16_t value);
 
 
 #endif  // _PWM_H

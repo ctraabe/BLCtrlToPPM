@@ -1,4 +1,4 @@
-update=11/1/2015 9:20:18 PM
+update=Wed 04 Jan 2017 02:53:37 PM JST
 version=1
 last_client=kicad
 [pcbnew]
@@ -60,3 +60,13 @@ LibName28=contrib
 LibName29=valves
 LibName30=mikrokopter
 LibName31=BLCtrlToPWM
+[schematic_editor]
+version=1
+PageLayoutDescrFile=
+PlotDirectoryName=
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=
+SpiceForceRefPrefix=0
+SpiceUseNetNumbers=0
+LabSize=60

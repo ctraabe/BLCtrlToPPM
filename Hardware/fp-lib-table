@@ -1,3 +1,4 @@
 (fp_lib_table
   (lib (name Pin_Headers_Edge)(type KiCad)(uri "$(KIPRJMOD)/KiCadCommon/Pin_Headers_Edge.pretty")(options "")(descr ""))
+  (lib (name Switches)(type KiCad)(uri "$(KIPRJMOD)/KiCadCommon/Switches.pretty")(options "")(descr ""))
 )

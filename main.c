@@ -20,7 +20,7 @@ int16_t main(void)
   Timer0Init();
   PWMInit();
   I2CSlaveInit();
-  // UARTInit();
+  UARTInit();
 
   sei();  // Enable interrupts
 

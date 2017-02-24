@@ -49,7 +49,7 @@
 // =============================================================================
 // Private data:
 
-#define USART0_BAUD (57600)
+#define USART3_BAUD (57600)
 
 static volatile uint8_t rx_buffer_head_ = 0, rx_buffer_[RX_BUFFER_LENGTH];
 static volatile uint8_t tx_bytes_remaining_ = 0, *tx_ptr_ = 0;
@@ -64,22 +64,22 @@ static uint8_t tx_overflow_counter_ = 0;
 void UARTInit(void)
 {
   // Pull up Rx pin.
-  PinMode(0, INPUT_PULLUP);
+  PinMode(15, INPUT_PULLUP);
   // Set the baud rate.
-  UBRR0 = F_CPU / 8 / USART0_BAUD - 1;
+  UBRR3 = F_CPU / 8 / USART3_BAUD - 1;
   // Set UART Double Speed (U2X).
-  UCSR0A = (1 << U2X0);
-  // Enable USART0 receiver and transmitter and interrupts.
-  UCSR0B = (1 << RXCIE0)  // RX Complete Interrupt Enable
-         | (0 << TXCIE0)  // TX Complete Interrupt Enable
-         | (0 << UDRIE0)  // Data Register Empty Interrupt Enable
-         | (1 << TXEN0)  // Transmitter Enable
-         | (1 << RXEN0)  // Receiver Enable
-         | (0 << UCSZ02);  // 9-bit Character Size Enable
-  UCSR0C = (0 << UMSEL01) | (0 << UMSEL00)  // USART Mode (asynchronous)
-         | (0 << UPM01) | (0 << UPM00)  // Parity Bit Mode (none)
-         | (0 << USBS0)  // 2 Stop Bit Enable
-         | (1 << UCSZ01) | (1 << UCSZ00);  // Character Size (8-bits)
+  UCSR3A = (1 << U2X3);
+  // Enable USART3 receiver and transmitter and interrupts.
+  UCSR3B = (1 << RXCIE3)  // RX Complete Interrupt Enable
+         | (0 << TXCIE3)  // TX Complete Interrupt Enable
+         | (0 << UDRIE3)  // Data Register Empty Interrupt Enable
+         | (1 << TXEN3)  // Transmitter Enable
+         | (1 << RXEN3)  // Receiver Enable
+         | (0 << UCSZ32);  // 9-bit Character Size Enable
+  UCSR3C = (0 << UMSEL31) | (0 << UMSEL30)  // USART Mode (asynchronous)
+         | (0 << UPM31) | (0 << UPM30)  // Parity Bit Mode (none)
+         | (0 << USBS3)  // 2 Stop Bit Enable
+         | (1 << UCSZ31) | (1 << UCSZ30);  // Character Size (8-bits)
 }
 
 // -----------------------------------------------------------------------------
@@ -127,7 +127,7 @@ void UARTTxBuffer(uint8_t tx_length)
   if (tx_length == 0) return;
   tx_ptr_ = &tx_buffer_[0];
   tx_bytes_remaining_ = tx_length;
-  UCSR0B |= _BV(UDRIE0);  // Enable the USART0 data register empty interrupt.
+  UCSR3B |= _BV(UDRIE3);  // Enable the USART3 data register empty interrupt.
 }
 
 // -----------------------------------------------------------------------------
@@ -135,8 +135,8 @@ void UARTTxBuffer(uint8_t tx_length)
 // transmission is commenced.
 void UARTTxByte(uint8_t byte)
 {
-  loop_until_bit_is_set(UCSR0A, UDRE0);
-  UDR0 = byte;
+  loop_until_bit_is_set(UCSR3A, UDRE3);
+  UDR3 = byte;
 }
 
 // -----------------------------------------------------------------------------
@@ -165,24 +165,24 @@ void UARTPrintf_P(const char *format, ...)
 // =============================================================================
 // Private functions:
 
-// This function is called upon the "USART0 data register empty" interrupt,
+// This function is called upon the "USART3 data register empty" interrupt,
 // indicating that the transmitter is ready to load another byte.
-ISR(USART0_UDRE_vect)
+ISR(USART3_UDRE_vect)
 {
   if (tx_bytes_remaining_)
   {
-    UDR0 = *(tx_ptr_++);
+    UDR3 = *(tx_ptr_++);
     tx_bytes_remaining_--;
   }
   else
   {
-    UCSR0B &= ~_BV(UDRIE0);  // Disable this interrupt
+    UCSR3B &= ~_BV(UDRIE3);  // Disable this interrupt
   }
 }
 
 // -----------------------------------------------------------------------------
-ISR(USART0_RX_vect)
+ISR(USART3_RX_vect)
 {
   rx_buffer_head_ = (rx_buffer_head_ + 1) % RX_BUFFER_LENGTH;
-  rx_buffer_[rx_buffer_head_] = UDR0;
+  rx_buffer_[rx_buffer_head_] = UDR3;
 }

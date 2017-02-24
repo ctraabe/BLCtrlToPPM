@@ -104,8 +104,8 @@ ISR(TWI_vect)
       I2CRxAck();
       break;
     case TW_ST_SLA_ACK:  // SLA+R received, ACK returned
-      TWDR = 240;  // Specific response for this module.
     case TW_ST_DATA_ACK:  // data transmitted, ACK received
+      TWDR = 240;  // Specific response for this module.
     case TW_ST_DATA_NACK:  // data transmitted, NACK received
     case TW_ST_LAST_DATA:  // last data byte transmitted, ACK received
       I2CRxAck();

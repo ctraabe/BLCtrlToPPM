@@ -24,6 +24,8 @@ int16_t main(void)
 
   sei();  // Enable interrupts
 
+  UARTPrintf("\n\rUniversity of Tokyo BLCtrlToPWM firmware V2\n\r");
+
   // Main loop
   uint16_t heartbeat = GetTimestampMillisFromNow(250);
   uint16_t pwm_timeout[8] = { 0 };

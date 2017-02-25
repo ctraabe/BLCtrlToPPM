@@ -38,6 +38,9 @@ volatile struct I2CMessage * PopI2CMessage(void);
 // =============================================================================
 // Public functions:
 
+void I2CReset(void);
+
+// -----------------------------------------------------------------------------
 // This initialization sets the I2C pin states. It should be performed prior to
 // enabling interrupts.
 void I2CSlaveInit(void);

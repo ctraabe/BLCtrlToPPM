@@ -26,7 +26,7 @@ enum I2CError i2c_error_ = I2C_ERROR_NONE;
 // =============================================================================
 // Private function declarations:
 
-static void I2CRxAck(void);
+static void I2CAck(void);
 
 
 // =============================================================================
@@ -57,13 +57,20 @@ volatile struct I2CMessage * PopI2CMessage(void)
 // =============================================================================
 // Public functions:
 
+void I2CReset(void)
+{
+  TWCR = _BV(TWINT) | _BV(TWSTO) | _BV(TWEN);
+  i2c_error_ = I2C_ERROR_NONE;
+}
+
+// -----------------------------------------------------------------------------
 // This initialization sets the I2C pin states. It should be performed prior to
 // enabling interrupts.
 void I2CSlaveInit(void)
 {
   TWAR = 0x51;  // Base BL-Ctrl address plus general call.
   TWAMR = 0x3E;  // Respond to any of the 8 motor addresses.
-  I2CRxAck();  // Send ACK upon receiving address match.
+  I2CAck();  // Send ACK upon receiving address match.
 }
 
 
@@ -71,7 +78,7 @@ void I2CSlaveInit(void)
 // Private functions:
 
 // Initiate data reception and acknowledge the result.
-static void I2CRxAck(void)
+static void I2CAck(void)
 {
   TWCR = _BV(TWINT) | _BV(TWEA) | _BV(TWEN) | _BV(TWIE);
 }
@@ -93,22 +100,6 @@ ISR(TWI_vect)
       if (address != 0) address = (address - BLCTRL_BASE_ADDRESS) >> 1;
       rx_buffer_[rx_buffer_head_].address = address;
       YellowLED2On();
-      I2CRxAck();
-      break;
-    case TW_SR_DATA_ACK:  // data received, ACK returned
-    case TW_SR_GCALL_DATA_ACK:  // general call data received, ACK returned
-    case TW_SR_DATA_NACK:  // data received, NACK returned
-    case TW_SR_GCALL_DATA_NACK:  // general call data received, NACK returned
-      *payload_ptr++ = TWDR;
-      ++length;
-      I2CRxAck();
-      break;
-    case TW_ST_SLA_ACK:  // SLA+R received, ACK returned
-    case TW_ST_DATA_ACK:  // data transmitted, ACK received
-      TWDR = 240;  // Specific response for this module.
-    case TW_ST_DATA_NACK:  // data transmitted, NACK received
-    case TW_ST_LAST_DATA:  // last data byte transmitted, ACK received
-      I2CRxAck();
       break;
     case TW_SR_STOP:  // stop or repeated start condition received while selected
       rx_buffer_[rx_buffer_head_].length = length;
@@ -116,12 +107,29 @@ ISR(TWI_vect)
       payload_ptr = &rx_buffer_[rx_buffer_head_].payload[0];
       length = 0;
       YellowLED2Off();
-      I2CRxAck();
       break;
-    case TW_NO_INFO:  // no state information available
+    case TW_SR_DATA_ACK:  // data received, ACK returned
+    case TW_SR_GCALL_DATA_ACK:  // general call data received, ACK returned
+    case TW_SR_DATA_NACK:  // data received, NACK returned
+    case TW_SR_GCALL_DATA_NACK:  // general call data received, NACK returned
+      *payload_ptr++ = TWDR;
+      ++length;
+      break;
+    case TW_ST_SLA_ACK:  // SLA+R received, ACK returned
+      YellowLED1On();
+    case TW_ST_DATA_ACK:  // data transmitted, ACK received
+      TWDR = 240;  // Specific response for this module.
+      break;
+    case TW_ST_DATA_NACK:  // data transmitted, NACK received
+      YellowLED1Off();
+    case TW_ST_LAST_DATA:  // last data byte transmitted, ACK received
+      break;
     case TW_BUS_ERROR:  // illegal start or stop condition
+      I2CReset();
+    case TW_NO_INFO:  // no state information available
       i2c_error_ = I2C_ERROR_OTHER;
-      I2CRxAck();
+      return;
       break;
   }
+  I2CAck();
 }
